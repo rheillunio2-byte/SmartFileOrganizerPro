@@ -1,18 +1,20 @@
 # SmartFileOrganizerPro 📁
 
-![Python](https://img.shields.io/badge/Python-3.14-blue?logo=python)
+![Version](https://img.shields.io/badge/version-2.0.0-6366f1)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
 ![CustomTkinter](https://img.shields.io/badge/GUI-CustomTkinter-green)
-![Pillow](https://img.shields.io/badge/Image%20Processing-Pillow-yellow)
+![Pillow](https://img.shields.io/badge/Graphics-Pillow-yellow)
 ![PyInstaller](https://img.shields.io/badge/Packaging-PyInstaller-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A **Python-based intelligent file management application** designed to automatically organize, categorize, and manage files into structured folders.
-
-SmartFileOrganizerPro helps users maintain a cleaner digital workspace by reducing repetitive manual file sorting through automation, file detection, and user-friendly graphical controls.
+A **Python desktop app that sorts messy folders into tidy, categorized folders** — safely, with a live preview,
+one-click undo, and an interface full of motion.
 
 ---
 
 # 🖥️ Application Preview
+
+> **Note:** the screenshots below are from v1.0. Captures of the v2.0 interface will replace them.
 
 <table>
   <tr>
@@ -54,120 +56,109 @@ SmartFileOrganizerPro helps users maintain a cleaner digital workspace by reduci
 
 # 📌 Overview
 
-SmartFileOrganizerPro is a desktop file organization application built with **Python** and **CustomTkinter**.
+SmartFileOrganizerPro looks at the loose files in a folder, classifies them by extension, and moves them into
+category sub-folders:
 
-The application automatically identifies file types based on their extensions and organizes them into categorized folders such as:
+- 🖼️ Images · 📄 Documents · 🎬 Videos · 🎵 Music · 📦 Archives · 📁 Others
 
-- 📷 Images
-- 📄 Documents
-- 🎵 Audio
-- 🎬 Videos
-- 📦 Archives
-- 📁 Other file types
-
-The goal of this project is to provide a simple, efficient, and user-friendly solution for managing digital files.
+You choose the folder and which categories to touch. Nothing is overwritten, every run is recorded, and the latest
+run can be undone.
 
 ---
 
 # ✨ Features
 
-✅ Automatic file organization  
-✅ Extension-based file classification  
-✅ Automatic folder creation  
-✅ File movement automation  
-✅ File organization history tracking  
-✅ User-friendly graphical interface  
-✅ Customizable application settings  
-✅ Lightweight desktop application  
-✅ Executable (.exe) support using PyInstaller  
+### Organizing
+✅ Extension-based classification into six categories  
+✅ Choose which categories to organize (toggle the floating pills)  
+✅ **Preview only** mode — see what would move without moving anything  
+✅ **Undo last run** — files go back where they came from  
+✅ Never overwrites: name clashes become `name (1).ext`, `name (2).ext`…  
+✅ Skips hidden files, folders, `desktop.ini` and `Thumbs.db`  
+✅ Runs in a background thread with live progress — the window never freezes  
+✅ One unreadable file never aborts the run  
+
+### History & statistics
+✅ Animated dashboard: per-category cards, distribution chart, lifetime totals  
+✅ Searchable history (folder, date, category) with CSV export  
+✅ Old v1 `history.txt` is imported automatically on first launch  
+
+### Interface & motion
+✅ Dark / Light / System themes and five accent colours  
+✅ Animated sidebar, page transitions, count-up numbers, toast notifications  
+✅ **TechWordmark** hero — hover a letter to turn it into a dashed vector outline; drag, kick or watch it sweep  
+✅ **FolderFloat** picker — a folder releases floating, draggable, colliding category pills  
+✅ **Animated cursor** — ring, comet trail and click ripples *(Windows)*  
+✅ Respects your preferences: animations and cursor effects can be switched off in Settings  
 
 ---
 
 # 🛠️ Technologies Used
 
-## Programming Language
+| Area | Tech |
+| --- | --- |
+| Language | Python 3.10+ |
+| GUI | CustomTkinter + raw Tk canvases for the animated parts |
+| Graphics | Pillow (renders the wordmark letters and their outlines) |
+| Packaging | PyInstaller |
+| Storage | JSON files in a per-user data folder |
+| Standard library | `pathlib`, `shutil`, `threading`, `queue`, `json`, `csv` |
 
-- Python 3.x
-
-## GUI Framework
-
-- CustomTkinter
-
-## Libraries
-
-- `os` — File system operations
-- `shutil` — File movement and management
-- `pathlib` — File path handling
-- `Pillow` — Image processing
-- `pandas` — Data handling
-
-## Development Tools
-
-- Visual Studio Code
-- PyInstaller
+> The wordmark and floating-folder interactions are **inspired by the React Bits `TechText` and `FolderFloat`
+> components** and re-implemented natively for Tkinter — no web view or JavaScript is involved.
 
 ---
 
 # 🚀 Installation
 
-## 1. Clone the repository
-
 ```bash
 git clone https://github.com/rheillunio2-byte/SmartFileOrganizerPro.git
-```
-
-## 2. Navigate to the project folder
-
-```bash
 cd SmartFileOrganizerPro
-```
-
-## 3. Install required dependencies
-
-```bash
 pip install -r requirements.txt
+python app.py
 ```
 
-## 4. Run the application
+Tkinter ships with the official Python installers for Windows and macOS. On Debian/Ubuntu install it with
+`sudo apt install python3-tk`.
+
+## Build an executable (Windows)
 
 ```bash
-python main.py
+pip install pyinstaller
+pyinstaller "Smart File Organizer Pro.spec"
 ```
+
+The executable appears in `dist/`.
 
 ---
 
 # 📖 How It Works
 
-1. User selects a folder to organize.
-2. The application scans all files inside the folder.
-3. File extensions are analyzed.
-4. Files are classified into categories.
-5. Required folders are created automatically.
-6. Files are moved into their corresponding folders.
-
-Example:
+1. Pick a folder (click the drop zone).
+2. The folder is scanned and each category pill shows how many files it will take.
+3. Switch categories on/off, optionally enable **Preview only**, then press **Organize Files**.
+4. Files are moved on a worker thread while the progress bar fills.
+5. The run is saved to history together with the information needed to undo it.
 
 ```
-Before:
+Before:                          After:
 
-📁 Downloads
- ├── image.jpg
- ├── document.pdf
- └── song.mp3
-
-
-After:
-
-📁 Downloads
- ├── Images
- │    └── image.jpg
- │
- ├── Documents
- │    └── document.pdf
- │
- └── Music
-      └── song.mp3
+📁 Downloads                      📁 Downloads
+ ├── image.jpg                     ├── Images
+ ├── document.pdf                  │    └── image.jpg
+ └── song.mp3                      ├── Documents
+                                   │    └── document.pdf
+                                   └── Music
+                                        └── song.mp3
 ```
+
+---
+
+# ⌨️ Shortcuts
+
+| Keys | Action |
+| --- | --- |
+| `Ctrl+1` … `Ctrl+5` | Dashboard · Organize · History · Settings · About |
 
 ---
 
@@ -175,36 +166,64 @@ After:
 
 ```
 SmartFileOrganizerPro/
-│
-├── main.py
-├── Images/
-│   ├── Dashboard Screenshot
-│   ├── Organize Screenshot
-│   ├── History Screenshot
-│   ├── Settings Screenshot
-│   └── About Screenshot
-│
-├── docs/
-│   └── CONTRIBUTING.md
-│
-├── README.md
+├── app.py                  # entry point
+├── config.py               # version, paths, constants
+├── requirements.txt
+├── assets/                 # app icon (app.ico / app.png)
+├── ui/
+│   ├── main_window.py      # window, navigation, page transitions
+│   ├── sidebar.py          # animated navigation
+│   ├── dashboard.py        # stats, chart, wordmark hero
+│   ├── organize_page.py    # folder picker, FolderFloat, worker thread
+│   ├── history_page.py     # searchable history, undo, CSV export
+│   ├── settings_page.py    # appearance, behaviour, motion
+│   ├── about_page.py
+│   ├── widgets.py          # cards, buttons, bar chart, drop zone, toast, icons
+│   ├── wordmark.py         # TechWordmark (interactive wordmark)
+│   ├── folder_float.py     # FolderFloat (floating category pills)
+│   ├── cursor_fx.py        # animated cursor overlay (Windows)
+│   ├── anim.py             # tween / easing / canvas-loop helpers
+│   └── theme.py            # palette, fonts, DPI helpers
+├── utils/
+│   ├── organizer.py        # scan / organize / undo (no UI code)
+│   ├── file_types.py       # categories, extensions, colours
+│   ├── history_manager.py  # JSON history (+ legacy import)
+│   ├── statistics.py
+│   ├── settings_manager.py
+│   └── system.py
+├── tests/
+│   ├── test_core.py        # unit tests for the logic layer
+│   ├── smoke_ui.py         # headless UI smoke test (stubbed Tk)
+│   └── stub_tk.py
+├── docs/CONTRIBUTING.md
+├── CHANGELOG.md
 ├── LICENSE
-└── requirements.txt
+└── Images/
+```
+
+**Where your data lives:** `%APPDATA%\SmartFileOrganizerPro` on Windows
+(`~/Library/Application Support/…` on macOS, `~/.local/share/…` on Linux) —
+`history.json` and `settings.json`. Use *About → Open data folder* to jump there.
+
+---
+
+# ✅ Tests
+
+```bash
+python -m unittest discover -s tests -t .     # logic layer (real files, no GUI needed)
+python -m tests.smoke_ui                      # UI wiring with a stubbed Tk (no display needed)
 ```
 
 ---
 
 # 🔮 Future Improvements
 
-Planned improvements:
-
-- Drag-and-drop file organization
-- Custom user-defined categories
+- Drag-and-drop a folder onto the drop zone
+- User-defined categories and extension rules
 - Duplicate file detection
-- Cloud backup integration
-- File search functionality
-- Dark/light theme customization
-- More advanced file management features
+- Sub-folder (recursive) organizing
+- Scheduled / watch-folder auto-organizing
+- Live accent-colour switching (currently applies on next launch)
 
 ---
 
@@ -220,7 +239,7 @@ University of Science and Technology of Southern Philippines (USTP)
 
 Contributions, suggestions, and improvements are welcome!
 
-Please read the [CONTRIBUTING.md](https://github.com/rheillunio2-byte/SmartFileOrganizerPro/blob/main/docs/CONTRIBUTING.md) guide before submitting changes.
+Please read the [CONTRIBUTING.md](https://github.com/rheillunio2-byte/SmartFileOrganizerPro/blob/main/docs/CONTRIBUTING.md) guide before submitting changes. Release notes are in the [CHANGELOG](CHANGELOG.md).
 
 ---
 

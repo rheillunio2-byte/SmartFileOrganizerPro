@@ -1,16 +1,20 @@
 # -*- mode: python ; coding: utf-8 -*-
+# Build with:  pyinstaller "Smart File Organizer Pro.spec"
+from PyInstaller.utils.hooks import collect_data_files
 
+# CustomTkinter ships theme/font files that must be bundled with the executable.
+datas = collect_data_files('customtkinter') + [('assets', 'assets')]
 
 a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=datas,
+    hiddenimports=['PIL._tkinter_finder'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['pandas', 'numpy', 'matplotlib'],
     noarchive=False,
     optimize=0,
 )
@@ -35,5 +39,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['assets\\app.ico'],
+    icon=['assets/app.ico'],
 )

@@ -1,5 +1,12 @@
+"""Smart File Organizer Pro — entry point."""
+
 from ui.main_window import MainWindow
 
-if __name__ == "__main__":
+
+def main() -> None:
     app = MainWindow()
     app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
