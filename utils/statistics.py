@@ -1,50 +1,30 @@
-from pathlib import Path
+"""Statistics derived from the history."""
+
+from __future__ import annotations
+
+from .file_types import CATEGORIES, empty_stats
+from .history_manager import load_history
 
 
-def get_latest_statistics():
+def get_latest_statistics() -> dict[str, int]:
+    """Stats of the most recent (not undone) run."""
+    for entry in reversed(load_history()):
+        if not entry.get("undone"):
+            stats = empty_stats()
+            stats.update({k: int(v) for k, v in entry.get("stats", {}).items() if k in stats})
+            return stats
+    return empty_stats()
 
-    history_file = Path("history/history.txt")
 
-    statistics = {
-        "Images": 0,
-        "Documents": 0,
-        "Videos": 0,
-        "Music": 0,
-        "Archives": 0,
-        "Others": 0,
-        "Total": 0
-    }
-
-    if not history_file.exists():
-        return statistics
-
-    with open(history_file, "r", encoding="utf-8") as file:
-        lines = file.readlines()
-
-    for line in reversed(lines):
-
-        line = line.strip()
-
-        if line.startswith("Images:"):
-            statistics["Images"] = int(line.split(":")[1])
-
-        elif line.startswith("Documents:"):
-            statistics["Documents"] = int(line.split(":")[1])
-
-        elif line.startswith("Videos:"):
-            statistics["Videos"] = int(line.split(":")[1])
-
-        elif line.startswith("Music:"):
-            statistics["Music"] = int(line.split(":")[1])
-
-        elif line.startswith("Archives:"):
-            statistics["Archives"] = int(line.split(":")[1])
-
-        elif line.startswith("Others:"):
-            statistics["Others"] = int(line.split(":")[1])
-
-        elif line.startswith("Total:"):
-            statistics["Total"] = int(line.split(":")[1])
-            break
-
-    return statistics
+def get_lifetime_statistics() -> dict[str, object]:
+    totals = empty_stats()
+    runs = 0
+    last = ""
+    for entry in load_history():
+        if entry.get("undone"):
+            continue
+        runs += 1
+        last = entry.get("timestamp", last)
+        for key in [*CATEGORIES, "Total"]:
+            totals[key] += int(entry.get("stats", {}).get(key, 0))
+    return {"totals": totals, "runs": runs, "last_run": last}
